@@ -10,7 +10,7 @@ client.on("ready",() => {
     console.log("Bot Ready.");
     client.user.setPresence({
         game: {
-            name: "type ;help",
+            name: "type ;help / ;help를 입력해보세요!",
             type: "STREAMING"
         },
         status: "idle"
@@ -41,33 +41,33 @@ client.on("message", async message => {
             let connection = await message.member.voiceChannel.join();
             let valid = await ytdl.validateURL(args[0]);
             if(!valid){
-                message.channel.send(":no_entry_sign:  **Not Valid!**");
+                message.channel.send(":no_entry_sign:  **Not Valid!**\n**올바르지 않습니다!**");
             } else {
                 let songinfo = await ytdl.getInfo(args[0]);
                 let dispatcher = await connection.playStream(ytdl(args[0], { filter: "audioonly" }));
                 message.react("👌");
 
                 let playUI = new discord.RichEmbed();
-                playUI.setAuthor("Now Playing")
+                playUI.setAuthor("Now Playing / 현재 재생중")
                       .setColor("#c72525")
                       .setDescription(songinfo.title)
                       .setThumbnail(songinfo.thumbnail_url)
                       .setTimestamp()
-                      .setFooter("KBot Music Player");
+                      .setFooter("KBot Music Player / KBot 음악 재생기");
                 message.channel.send(playUI);
             }
         }
     } else if(cmd == "leave"){
     if(!message.member.voiceChannel){
-        message.channel.send("**You are not on the voice channel!**");
+        message.channel.send(".\n**You are not on the voice channel!**\n**당신은 음성 채널에 연결하지 않았습니다!**");
         return;
     }
     if(!message.guild.me.voiceChannel){
-        message.channel.send("**The bot is not connected to the music channel!**");
+        message.channel.send(".\n**The bot is not connected to the music channel!**\n**봇이 음성 채널에 연결되지 않았습니다!**");
         return;
     }
     if(message.guild.me.voiceChannelID !== message.member.voiceChannelID){
-        message.channel.send("**You are not connected to the same music channel!**");
+        message.channel.send(".\n**You are not connected to the same music channel!**\n**당신은 봇과 같은 음성 채널에 연결되지 않았습니다!**");
         return;
     }
 
@@ -77,10 +77,10 @@ client.on("message", async message => {
         try {
             var result1 = eval(args[0]);
         } catch(e) {
-            message.channel.send(`**EVAL ERROR**\n\n${e}`);
+            message.channel.send(`.\n**EVAL ERROR**\n**이발 오류**\n\n${e}`);
         }
         let evalUI = new discord.RichEmbed();
-            evalUI.setAuthor("Eval Results")
+            evalUI.setAuthor("Eval Results / 이발 결과: ")
                   .setColor("#49b051")
                   .setDescription(`${result1}`)
                   .setTimestamp()
