@@ -1,0 +1,21 @@
+{
+  "name": "kbot",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "test": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "null"
+  },
+  "author": "Minecart8925",
+  "license": "LGPL-3.0-or-later",
+  "dependencies": {
+    "discord.js": "^11.5.1",
+    "ffmpeg": "0.0.4",
+    "node-opus": "^0.3.3",
+    "ytdl-core": "^1.0.0"
+  }
+}
