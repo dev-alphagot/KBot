@@ -5,15 +5,17 @@ const fs = require('fs');
 const raw_config = fs.readFileSync(__dirname + "/config.json", "utf-8");
 const config = JSON.parse(raw_config);
 const ytdl = require('ytdl-core');
+const prefix = config.prefix;
+const os = require('os');
 
 client.on("ready",() => {
     console.log("Bot Ready.");
     client.user.setPresence({
         game: {
-            name: "type ;help",
+            name: `type ${prefix}help`,
             type: "STREAMING"
         },
-        status: "idle"
+        
     });
 });
 
@@ -24,14 +26,14 @@ client.on("message", async message => {
 
     if(msg.author.bot == true){
         return; //ignore Bot
-    } else if(!msg.content.startsWith(";")){
+    } else if(!msg.content.startsWith(prefix)){
         return; //ignore not-command message
     } else {
         //cut commands
         args = msg.content.split(" ");
         cmd = args[0];
         args.shift();
-        cmd = cmd.substr(1);
+        cmd = cmd.substr(prefix.length);
     }
     //log message
     console.log("cmd: " + cmd);
@@ -53,41 +55,38 @@ client.on("message", async message => {
                       .setDescription(songinfo.title)
                       .setThumbnail(songinfo.thumbnail_url)
                       .setTimestamp()
-                      .setFooter("KBot Music Player");
+                      .setFooter("KBot");
                 message.channel.send(playUI);
             }
         }
     } else if(cmd == "leave"){
     if(!message.member.voiceChannel){
-        message.channel.send("**You are not on the voice channel!**");
+        message.channel.send(":no_entry_sign:  **You are not on the voice channel!**");
         return;
     }
     if(!message.guild.me.voiceChannel){
-        message.channel.send("**The bot is not connected to the music channel!**");
+        message.channel.send(":no_entry_sign:  **The bot is not connected to the music channel!**");
         return;
     }
     if(message.guild.me.voiceChannelID !== message.member.voiceChannelID){
-        message.channel.send("**You are not connected to the same music channel!**");
+        message.channel.send(":no_entry_sign:  **You are not connected to the same music channel!**");
         return;
     }
 
     message.guild.me.voiceChannel.leave();
     message.react("👋");
-    } else if(cmd == "eval"){
-        try {
-            var result1 = eval(args[0]);
-        } catch(e) {
-            message.channel.send(`**EVAL ERROR**\n\n${e}`);
-        }
-        let evalUI = new discord.RichEmbed();
-            evalUI.setAuthor("Eval Results")
-                  .setColor("#49b051")
-                  .setDescription(`${result1}`)
-                  .setTimestamp()
-                  .setFooter("KBot Eval");
-        message.channel.send(evalUI);
-    }
-
+    } else if(cmd == "ping"){
+        let pingUI = new discord.RichEmbed();
+                pingUI.setAuthor("Ping")
+                      //.setColor("#cc800c5")
+                      .setDescription(`Current Ping: ${client.ping}ms`)
+                      .setTimestamp()
+                      .setFooter("KBot");
+        message.channel.send(pingUI);
+    } 
+    
 });
+
+
 
 client.login(config.token);

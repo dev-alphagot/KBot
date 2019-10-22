@@ -1,3 +1,5 @@
 {
-    "token": "TYPE_YOUR_DISCORD_BOT_TOKEN"
+    "token": "",
+    "prefix": ";",
+    "version": "V1_TEST"
 }
