@@ -1,5 +1,10 @@
+<<<<<<< HEAD
 {
     "token": "",
     "prefix": ";",
     "version": "V1_TEST"
+=======
+{
+    "token": "TYPE_YOUR_DISCORD_BOT_TOKEN"
+>>>>>>> 6b71b5287554dba72938684929dd9b9bb8415afc
 }
