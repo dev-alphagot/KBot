@@ -6,8 +6,12 @@ const raw_config = fs.readFileSync(__dirname + "/config.json", "utf-8");
 const config = JSON.parse(raw_config);
 const ytdl = require('ytdl-core');
 const prefix = config.prefix;
-const version = config.version;
 const os = require('os');
+const day=new Date
+const id = {
+    queue: [],
+    config: config
+};
 
 client.on("ready",() => {
     console.log("Bot Ready.");
@@ -24,6 +28,7 @@ client.on("message", async message => {
     let msg = message;
     let args;
     let cmd;
+    
 
     if(msg.author.bot == true){
         return; //ignore Bot
@@ -38,28 +43,11 @@ client.on("message", async message => {
     }
     //log message
     console.log("cmd: " + cmd);
+    fs.appendFileSync("\Logs\Chat_${msg.guild}\Channel_${msg.channel}","${day.getUTCDate}> ${msg.content}")
     console.log(args);
     if(cmd == "play"){
-        if(message.member.voiceChannel){
-            let connection = await message.member.voiceChannel.join();
-            let valid = await ytdl.validateURL(args[0]);
-            if(!valid){
-                message.channel.send(":no_entry_sign:  **Not Valid!**");
-            } else {
-                let songinfo = await ytdl.getInfo(args[0]);
-                let dispatcher = await connection.playStream(ytdl(args[0], { filter: "audioonly" }));
-                message.react("👌");
-
-                let playUI = new discord.RichEmbed();
-                playUI.setAuthor("Now Playing")
-                      .setColor("#c72525")
-                      .setDescription(songinfo.title)
-                      .setThumbnail(songinfo.thumbnail_url)
-                      .setTimestamp()
-                      .setFooter("KBot Version "+version);
-                message.channel.send(playUI);
-            }
-        }
+        let playmodule = require("./modules/music.js");
+        playmodule.play(msg, client, msg.channel, args, id);
     } else if(cmd == "leave"){
     if(!message.member.voiceChannel){
         message.channel.send(":no_entry_sign:  **You are not on the voice channel!**");
@@ -77,13 +65,15 @@ client.on("message", async message => {
     message.guild.me.voiceChannel.leave();
     message.react("👋");
     } else if(cmd == "ping"){
-        let pingUI = new discord.RichEmbed();
-                pingUI.setAuthor("Ping")
-                      .setColor("#cc800c5")
-                      .setDescription(`Current Ping: ${client.ping}ms`)
-                      .setTimestamp()
-                      .setFooter("KBot Version "+version);
-        message.channel.send(pingUI);
-    } 
+       let pingmodule = require('./modules/ping.js');
+       pingmodule.ping(message, client, msg.channel, args, id);
+    } else if(cmd == "reload"){
+        let reloadmodule = require('./modules/reload.js');
+        reloadmodule.ping(message, client, msg.channel, args, id);
+    }
     
 });
+
+
+
+client.login(config.token);
